@@ -1,0 +1,27 @@
+name: file_transfer
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  crypto: ^3.0.7
+  file_picker: ^10.3.10
+  file_saver: ^0.3.1
+  flutter:
+    sdk: flutter
+  get: ^4.7.3
+  ndk: ^0.7.1-dev.19
+  ndk_flutter: ^0.0.2-dev.13
+  nip49: ^1.1.2
+  pointycastle: ^4.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
