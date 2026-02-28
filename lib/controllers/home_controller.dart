@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:file_transfer/functions/share_file.dart';
 import 'package:file_transfer/models/shared_file.dart';
 import 'package:file_transfer/routes.dart';
+import 'package:file_transfer/utils/platform_helper.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mime/mime.dart';
@@ -67,8 +68,10 @@ class HomePageController extends GetxController {
 
   void copyShareLink() {
     if (_sharedFile.value == null) return;
-    final link =
-        'https://example.com/f/${_sharedFile.value!.nevent}/${_sharedFile.value!.encodedPrivateKey}';
+    final link = PlatformHelper.buildShareLink(
+      _sharedFile.value!.nevent,
+      _sharedFile.value!.encodedPrivateKey,
+    );
     copyToClipboard(link, 'Share link');
   }
 
@@ -90,7 +93,7 @@ class HomePageController extends GetxController {
       return;
     }
 
-    // Parse link: https://example.com/f/:nevent/:nsec
+    // Parse link: <base-url>/f/:nevent/:nsec
     try {
       final uri = Uri.parse(link);
       final segments = uri.pathSegments;
@@ -109,7 +112,7 @@ class HomePageController extends GetxController {
 
     Get.snackbar(
       'Invalid Link',
-      'Please copy a valid share link (https://example.com/f/...)',
+      'Please copy a valid share link',
       snackPosition: SnackPosition.BOTTOM,
     );
   }

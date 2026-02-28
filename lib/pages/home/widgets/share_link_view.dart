@@ -1,5 +1,6 @@
 import 'package:file_transfer/controllers/home_controller.dart';
 import 'package:file_transfer/models/shared_file.dart';
+import 'package:file_transfer/utils/platform_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -72,18 +73,18 @@ class ShareLinkView extends GetView<HomePageController> {
     SharedFile sharedFile,
     ColorScheme colorScheme,
   ) {
+    final shareLink = PlatformHelper.buildShareLink(
+      sharedFile.nevent,
+      sharedFile.encodedPrivateKey,
+    );
+
     return Card(
       child: Padding(
         padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildInfoRow(
-              'Share Link:',
-              'https://example.com/f/${sharedFile.nevent}/${sharedFile.encodedPrivateKey}',
-              isSmallScreen,
-              colorScheme,
-            ),
+            _buildInfoRow('Share Link:', shareLink, isSmallScreen, colorScheme),
             SizedBox(height: isSmallScreen ? 12 : 16),
             _buildInfoRow(
               'Event (nevent):',
