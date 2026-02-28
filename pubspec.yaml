@@ -1,5 +1,5 @@
 name: file_transfer
-description: "A new Flutter project."
+description: "Zero SPOF file transfer over Nostr. E2E encrypted, decentralized, and private."
 publish_to: 'none'
 version: 0.1.0+1
 
