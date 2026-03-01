@@ -21,6 +21,7 @@ dependencies:
   ndk_flutter: ^0.0.2-dev.13
   nip49: ^1.1.2
   path: ^1.9.1
+  toastification: ^3.0.3
 
 dev_dependencies:
   flutter_test:

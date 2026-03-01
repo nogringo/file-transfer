@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ndk/ndk.dart';
 import 'package:ndk_flutter/ndk_flutter.dart';
+import 'package:toastification/toastification.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,26 +30,28 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'File Transfer',
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      getPages: [
-        GetPage(
-          name: AppRoutes.home,
-          page: () => const HomePage(),
-          binding: BindingsBuilder(() {
-            Get.put(HomePageController());
-          }),
-        ),
-        GetPage(
-          name: AppRoutes.fileShare,
-          page: () => const FileSharePage(),
-          binding: BindingsBuilder(() {
-            Get.put(FileShareController());
-          }),
-        ),
-      ],
+    return ToastificationWrapper(
+      child: GetMaterialApp(
+        title: 'File Transfer',
+        theme: ThemeData.light(),
+        darkTheme: ThemeData.dark(),
+        getPages: [
+          GetPage(
+            name: AppRoutes.home,
+            page: () => const HomePage(),
+            binding: BindingsBuilder(() {
+              Get.put(HomePageController());
+            }),
+          ),
+          GetPage(
+            name: AppRoutes.fileShare,
+            page: () => const FileSharePage(),
+            binding: BindingsBuilder(() {
+              Get.put(FileShareController());
+            }),
+          ),
+        ],
+      ),
     );
   }
 }

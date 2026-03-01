@@ -4,9 +4,11 @@ import 'package:file_transfer/models/file_metadata.dart';
 import 'package:file_transfer/models/shared_file.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ndk/ndk.dart';
 import 'package:path/path.dart' as p;
+import 'package:toastification/toastification.dart';
 
 class FileShareController extends GetxController {
   final _isLoading = false.obs;
@@ -132,16 +134,20 @@ class FileShareController extends GetxController {
         customMimeType: mimeType,
       );
 
-      Get.snackbar(
-        'Success',
-        'File saved successfully',
-        snackPosition: SnackPosition.BOTTOM,
+      toastification.show(
+        type: ToastificationType.success,
+        style: ToastificationStyle.flatColored,
+        title: const Text('File saved'),
+        autoCloseDuration: const Duration(seconds: 2),
+        alignment: Alignment.bottomCenter,
       );
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to save file: $e',
-        snackPosition: SnackPosition.BOTTOM,
+      toastification.show(
+        type: ToastificationType.error,
+        style: ToastificationStyle.flatColored,
+        title: Text('Failed to save: $e'),
+        autoCloseDuration: const Duration(seconds: 3),
+        alignment: Alignment.bottomCenter,
       );
     }
   }

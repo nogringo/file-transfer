@@ -6,10 +6,12 @@ import 'package:file_transfer/models/shared_file.dart';
 import 'package:file_transfer/routes.dart';
 import 'package:file_transfer/utils/platform_helper.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:get/get.dart';
 import 'package:mime/mime.dart';
+import 'package:toastification/toastification.dart';
 
 class HomePageController extends GetxController {
   final _sharedFile = Rxn<SharedFile>();
@@ -23,6 +25,19 @@ class HomePageController extends GetxController {
   String? get error => _error.value;
   bool get isDragging => _isDragging.value;
   bool get isWeb => kIsWeb;
+
+  void _showToast(
+    String message, {
+    ToastificationType type = ToastificationType.info,
+  }) {
+    toastification.show(
+      type: type,
+      style: ToastificationStyle.flatColored,
+      title: Text(message),
+      autoCloseDuration: const Duration(seconds: 2),
+      alignment: Alignment.bottomCenter,
+    );
+  }
 
   Future<void> handleDroppedFile(dynamic file) async {
     _isDragging.value = false;
@@ -117,12 +132,7 @@ class HomePageController extends GetxController {
 
   void copyToClipboard(String text, String label) {
     Clipboard.setData(ClipboardData(text: text));
-    Get.snackbar(
-      'Copied',
-      '$label copied to clipboard',
-      snackPosition: SnackPosition.BOTTOM,
-      duration: const Duration(seconds: 2),
-    );
+    _showToast('$label copied to clipboard');
   }
 
   void copyShareLink() {
@@ -144,10 +154,9 @@ class HomePageController extends GetxController {
     final link = clipboardData?.text;
 
     if (link == null || link.isEmpty) {
-      Get.snackbar(
-        'No Link',
+      _showToast(
         'No link found in clipboard',
-        snackPosition: SnackPosition.BOTTOM,
+        type: ToastificationType.warning,
       );
       return;
     }
@@ -172,10 +181,6 @@ class HomePageController extends GetxController {
       // Invalid URL
     }
 
-    Get.snackbar(
-      'Invalid Link',
-      'Please copy a valid share link',
-      snackPosition: SnackPosition.BOTTOM,
-    );
+    _showToast('Invalid share link format', type: ToastificationType.error);
   }
 }
