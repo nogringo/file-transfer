@@ -17,9 +17,10 @@ Future<EncryptedBlob> encryptBlob(Uint8List bytes) async {
 
   // Concatenate ciphertext + MAC for storage
   final macBytes = secretBox.mac.bytes;
-  final encryptedData = Uint8List.fromList(
-    [...secretBox.cipherText, ...macBytes],
-  );
+  final encryptedData = Uint8List.fromList([
+    ...secretBox.cipherText,
+    ...macBytes,
+  ]);
 
   return EncryptedBlob(
     bytes: encryptedData,

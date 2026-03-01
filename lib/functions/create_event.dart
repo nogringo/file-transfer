@@ -7,6 +7,7 @@ Future<Nip01Event> createEvent({
   required String recipientPubkey,
   required String key,
   required String nonce,
+  String? filename,
 }) async {
   final keyPair = Bip340.generatePrivateKey();
   final signer = Bip340EventSigner(
@@ -19,6 +20,7 @@ Future<Nip01Event> createEvent({
     kind: 15,
     tags: [
       if (descriptor.type != null) ["file-type", descriptor.type!],
+      if (filename != null && filename.isNotEmpty) ["filename", filename],
       ["encryption-algorithm", "aes-gcm"],
       ["decryption-key", key],
       ["decryption-nonce", nonce],

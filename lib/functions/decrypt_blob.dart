@@ -24,9 +24,7 @@ Future<Uint8List> decryptBlob({
     0,
     encryptedBytes.length - macLength,
   );
-  final macBytes = encryptedBytes.sublist(
-    encryptedBytes.length - macLength,
-  );
+  final macBytes = encryptedBytes.sublist(encryptedBytes.length - macLength);
 
   // Create secret key from bytes
   final secretKey = SecretKey(keyBytes);

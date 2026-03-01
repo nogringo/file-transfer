@@ -11,6 +11,7 @@ import 'package:ndk_flutter/ndk_flutter.dart';
 Future<SharedFile> shareFile({
   required Uint8List bytes,
   String? contentType,
+  String? filename,
 }) async {
   final ndk = Ndk(
     NdkConfig(
@@ -41,6 +42,7 @@ Future<SharedFile> shareFile({
     recipientPubkey: recipientKeyPair.publicKey,
     key: encryptedBlob.key,
     nonce: encryptedBlob.nonce,
+    filename: filename,
   );
 
   await ndk.broadcast

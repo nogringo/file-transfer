@@ -1,7 +1,9 @@
 - [ ] Translations
 - [ ] Drop file
-- [ ] Keep file name
+- [x] Keep file name
 - [ ] Use streams
 - [ ] Better UI/UX
 - [ ] Remove snackbars
 - [x] Use https://pub.dev/packages/webcrypto or https://pub.dev/packages/cryptography for efficient web crypto operations
+- [ ] 2 options: everyone can delete with the link | only the creator can delete
+- [ ] ox, os, original sha256, original size

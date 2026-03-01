@@ -6,6 +6,7 @@ import 'package:file_saver/file_saver.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:ndk/ndk.dart';
+import 'package:path/path.dart' as p;
 
 class FileShareController extends GetxController {
   final _isLoading = false.obs;
@@ -13,7 +14,6 @@ class FileShareController extends GetxController {
   final _error = RxnString();
   final _decryptedData = Rxn<Uint8List>();
   final _metadata = Rxn<FileMetadata>();
-  final _filename = RxnString();
   final _hasStarted = false.obs;
 
   bool get isLoading => _isLoading.value;
@@ -21,7 +21,6 @@ class FileShareController extends GetxController {
   String? get error => _error.value;
   Uint8List? get decryptedData => _decryptedData.value;
   FileMetadata? get metadata => _metadata.value;
-  String? get filename => _filename.value;
   bool get hasStarted => _hasStarted.value;
 
   @override
@@ -120,10 +119,15 @@ class FileShareController extends GetxController {
 
     try {
       final mimeType = _metadata.value?.fileType ?? 'application/octet-stream';
+      final filename = _metadata.value?.filename ?? 'downloaded_file';
+
+      final nameWithoutExt = p.withoutExtension(filename);
+      final ext = p.extension(filename).replaceFirst('.', '');
+
       await FileSaver.instance.saveFile(
-        name: _filename.value ?? 'downloaded_file',
+        name: nameWithoutExt,
         bytes: _decryptedData.value!,
-        fileExtension: mimeType.split('/').last,
+        fileExtension: ext.isEmpty ? mimeType.split('/').last : ext,
         mimeType: MimeType.other,
         customMimeType: mimeType,
       );

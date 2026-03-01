@@ -46,6 +46,7 @@ class HomePageController extends GetxController {
       final sharedFile = await shareFile(
         bytes: file.bytes!,
         contentType: mimeType,
+        filename: file.name,
       );
 
       _sharedFile.value = sharedFile;
