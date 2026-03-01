@@ -152,18 +152,21 @@ class HomePageController extends GetxController {
       return;
     }
 
-    // Parse link: <base-url>/f/:nevent/:nsec
+    // Parse link by splitting on "/" and finding nevent/nsec
     try {
-      final uri = Uri.parse(link);
-      final segments = uri.pathSegments;
+      final segments = link.split('/').where((s) => s.isNotEmpty).toList();
 
-      if (segments.length >= 3 && segments[0] == 'f') {
-        final nevent = segments[1];
-        final nsec = segments[2];
+      // nevent and nsec are always the last two segments
+      if (segments.length >= 2) {
+        final nsec = segments.last;
+        final nevent = segments[segments.length - 2];
 
-        // Navigate to file share page with values in URL
-        Get.toNamed(AppRoutes.fileShareRoute(nevent, nsec));
-        return;
+        // Validate NIP-19 format
+        if (nevent.startsWith('nevent1') && nsec.startsWith('nsec1')) {
+          // Navigate to file share page with values in URL
+          Get.toNamed(AppRoutes.fileShareRoute(nevent, nsec));
+          return;
+        }
       }
     } catch (e) {
       // Invalid URL

@@ -1,5 +1,5 @@
 - [ ] Translations
-- [ ] Drop file
+- [x] Drop file
 - [x] Keep file name
 - [ ] Use streams
 - [ ] Better UI/UX
