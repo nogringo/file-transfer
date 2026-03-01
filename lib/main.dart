@@ -7,10 +7,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ndk/ndk.dart';
+import 'package:ndk/shared/nips/nip01/bip340.dart';
 import 'package:ndk_flutter/ndk_flutter.dart';
 import 'package:toastification/toastification.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final ndk = Ndk(
@@ -19,8 +20,20 @@ void main() {
       cache: MemCacheManager(),
     ),
   );
-
   Get.put(ndk);
+
+  final ndkFlutter = NdkFlutter(ndk: ndk);
+  Get.put(ndkFlutter);
+
+  await ndkFlutter.restoreAccountsState();
+
+  if (ndk.accounts.accounts.isEmpty) {
+    final keyPair = Bip340.generatePrivateKey();
+    ndk.accounts.loginPrivateKey(
+      pubkey: keyPair.publicKey,
+      privkey: keyPair.privateKey!,
+    );
+  }
 
   runApp(const MainApp());
 }

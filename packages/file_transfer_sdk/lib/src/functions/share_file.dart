@@ -10,24 +10,11 @@ import 'package:ndk/ndk.dart';
 import 'package:ndk/shared/nips/nip01/bip340.dart';
 
 Future<SharedFile> shareFile({
+  required Ndk ndk,
   required Uint8List bytes,
   String? contentType,
   String? filename,
-  EventVerifier? eventVerifier,
 }) async {
-  final ndk = Ndk(
-    NdkConfig(
-      eventVerifier: eventVerifier ?? Bip340EventVerifier(),
-      cache: MemCacheManager(),
-    ),
-  );
-
-  final keyPair = Bip340.generatePrivateKey();
-  ndk.accounts.loginPrivateKey(
-    pubkey: keyPair.publicKey,
-    privkey: keyPair.privateKey!,
-  );
-
   final recipientKeyPair = Bip340.generatePrivateKey();
 
   final encryptedBlob = await encryptBlob(bytes);

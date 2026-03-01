@@ -10,8 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:get/get.dart';
 import 'package:mime/mime.dart';
-import 'package:ndk/data_layer/repositories/verifiers/bip340_event_verifier.dart';
-import 'package:ndk_flutter/ndk_flutter.dart';
 import 'package:toastification/toastification.dart';
 
 class HomePageController extends GetxController {
@@ -69,10 +67,10 @@ class HomePageController extends GetxController {
       );
 
       final sharedFile = await shareFile(
+        ndk: Get.find(),
         bytes: bytes,
         contentType: mimeType,
         filename: filename,
-        eventVerifier: kIsWeb ? WebEventVerifier() : Bip340EventVerifier(),
       );
 
       _sharedFile.value = sharedFile;
@@ -119,10 +117,10 @@ class HomePageController extends GetxController {
       );
 
       final sharedFile = await shareFile(
+        ndk: Get.find(),
         bytes: file.bytes!,
         contentType: mimeType,
         filename: file.name,
-        eventVerifier: kIsWeb ? WebEventVerifier() : Bip340EventVerifier(),
       );
 
       _sharedFile.value = sharedFile;
