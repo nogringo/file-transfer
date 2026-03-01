@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:file_transfer/functions/share_file.dart';
 import 'package:file_transfer/models/shared_file.dart';
 import 'package:file_transfer/routes.dart';
 import 'package:file_transfer/utils/platform_helper.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:get/get.dart';
 import 'package:mime/mime.dart';
 
@@ -11,10 +15,64 @@ class HomePageController extends GetxController {
   final _sharedFile = Rxn<SharedFile>();
   final _isUploading = false.obs;
   final _error = RxnString();
+  final _isDragging = false.obs;
+  final dropzoneController = Rxn<DropzoneViewController>();
 
   SharedFile? get sharedFile => _sharedFile.value;
   bool get isUploading => _isUploading.value;
   String? get error => _error.value;
+  bool get isDragging => _isDragging.value;
+  bool get isWeb => kIsWeb;
+
+  Future<void> handleDroppedFile(dynamic file) async {
+    _isDragging.value = false;
+    _isUploading.value = true;
+    _error.value = null;
+
+    try {
+      String filename;
+      Uint8List bytes;
+
+      if (kIsWeb && file is DropzoneFileInterface) {
+        // Web: use dropzone controller
+        filename = await dropzoneController.value!.getFilename(file);
+        bytes = await dropzoneController.value!.getFileData(file);
+      } else if (file is String) {
+        // Desktop: file path
+        final filePath = file;
+        final fileObj = File(filePath);
+        filename = fileObj.uri.pathSegments.last;
+        bytes = await fileObj.readAsBytes();
+      } else {
+        throw Exception('Unsupported file type: ${file.runtimeType}');
+      }
+
+      final mimeType = lookupMimeType(
+        filename,
+        headerBytes: bytes.take(8).toList(),
+      );
+
+      final sharedFile = await shareFile(
+        bytes: bytes,
+        contentType: mimeType,
+        filename: filename,
+      );
+
+      _sharedFile.value = sharedFile;
+      _isUploading.value = false;
+    } catch (e) {
+      _error.value = e.toString();
+      _isUploading.value = false;
+    }
+  }
+
+  void onDragHover() {
+    _isDragging.value = true;
+  }
+
+  void onDragLeave() {
+    _isDragging.value = false;
+  }
 
   Future<void> pickAndShareFile() async {
     _isUploading.value = true;
