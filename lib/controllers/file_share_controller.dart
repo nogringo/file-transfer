@@ -1,8 +1,5 @@
-import 'package:file_transfer/functions/fetch_blob.dart';
-import 'package:file_transfer/functions/fetch_file_metdata.dart';
-import 'package:file_transfer/models/file_metadata.dart';
-import 'package:file_transfer/models/shared_file.dart';
 import 'package:file_saver/file_saver.dart';
+import 'package:file_transfer_sdk/file_transfer_sdk.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

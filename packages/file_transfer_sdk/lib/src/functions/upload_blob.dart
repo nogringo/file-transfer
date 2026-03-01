@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:file_transfer/constants.dart';
+import 'package:file_transfer_sdk/src/constants.dart';
 import 'package:ndk/ndk.dart';
 
 Future<BlobDescriptor?> uploadBlob({

@@ -1,8 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:file_transfer/constants.dart';
-import 'package:file_transfer/functions/decrypt_blob.dart';
-import 'package:file_transfer/models/file_metadata.dart';
+import 'package:file_transfer_sdk/file_transfer_sdk.dart';
+import 'package:file_transfer_sdk/src/constants.dart';
+
+import 'decrypt_blob.dart';
 import 'package:ndk/ndk.dart';
 
 Future<Uint8List> fetchBlob({

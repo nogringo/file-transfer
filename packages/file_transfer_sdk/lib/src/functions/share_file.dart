@@ -1,21 +1,23 @@
-import 'package:file_transfer/constants.dart';
-import 'package:file_transfer/functions/create_event.dart';
-import 'package:file_transfer/functions/encrypt_blob.dart';
-import 'package:file_transfer/functions/upload_blob.dart';
-import 'package:file_transfer/models/shared_file.dart';
-import 'package:flutter/foundation.dart';
+import 'dart:typed_data';
+
+import 'package:file_transfer_sdk/file_transfer_sdk.dart';
+import 'package:file_transfer_sdk/src/constants.dart';
+
+import 'create_event.dart';
+import 'encrypt_blob.dart';
+import 'upload_blob.dart';
 import 'package:ndk/ndk.dart';
 import 'package:ndk/shared/nips/nip01/bip340.dart';
-import 'package:ndk_flutter/ndk_flutter.dart';
 
 Future<SharedFile> shareFile({
   required Uint8List bytes,
   String? contentType,
   String? filename,
+  EventVerifier? eventVerifier,
 }) async {
   final ndk = Ndk(
     NdkConfig(
-      eventVerifier: kIsWeb ? WebEventVerifier() : Bip340EventVerifier(),
+      eventVerifier: eventVerifier ?? Bip340EventVerifier(),
       cache: MemCacheManager(),
     ),
   );

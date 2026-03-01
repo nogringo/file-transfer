@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:file_transfer/functions/decrypt_blob.dart';
-import 'package:file_transfer/functions/encrypt_blob.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:file_transfer_sdk/src/functions/decrypt_blob.dart';
+import 'package:file_transfer_sdk/src/functions/encrypt_blob.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('Encrypt/Decrypt Roundtrip Tests', () {

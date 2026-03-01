@@ -1,6 +1,6 @@
 import 'package:file_transfer/controllers/home_controller.dart';
-import 'package:file_transfer/models/shared_file.dart';
 import 'package:file_transfer/utils/platform_helper.dart';
+import 'package:file_transfer_sdk/file_transfer_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

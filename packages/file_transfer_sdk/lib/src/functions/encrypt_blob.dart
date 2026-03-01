@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:cryptography/cryptography.dart';
-import 'package:file_transfer/models/encrypted_blob.dart';
+import 'package:file_transfer_sdk/file_transfer_sdk.dart';
 
 /// Encrypts data using AES-256-GCM
 /// Returns the encrypted blob with key, nonce, and auth tag

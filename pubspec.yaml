@@ -22,6 +22,8 @@ dependencies:
   nip49: ^1.1.2
   path: ^1.9.1
   toastification: ^3.0.3
+  file_transfer_sdk:
+    path: packages/file_transfer_sdk
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,4 @@
-import 'package:file_transfer/models/file_metadata.dart';
-import 'package:file_transfer/models/shared_file.dart';
+import 'package:file_transfer_sdk/file_transfer_sdk.dart';
 import 'package:ndk/ndk.dart';
 import 'package:ndk/shared/nips/nip01/bip340.dart';
 
