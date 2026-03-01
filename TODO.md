@@ -1,0 +1,7 @@
+- [ ] Translations
+- [ ] Drop file
+- [ ] Keep file name
+- [ ] Use streams
+- [ ] Better UI/UX
+- [ ] Remove snackbars
+- [x] Use https://pub.dev/packages/webcrypto or https://pub.dev/packages/cryptography for efficient web crypto operations
