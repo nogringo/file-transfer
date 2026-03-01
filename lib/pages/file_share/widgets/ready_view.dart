@@ -83,7 +83,35 @@ class ReadyView extends GetView<FileShareController> {
       child: Padding(
         padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (metadata.filename != null) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Name:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: isSmallScreen ? 13 : 14,
+                    ),
+                  ),
+                  Flexible(
+                    child: Text(
+                      metadata.filename!,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        fontSize: isSmallScreen ? 13 : 14,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              const Divider(),
+            ],
             if (metadata.fileType != null) ...[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

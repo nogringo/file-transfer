@@ -12,6 +12,9 @@ class HomePage extends GetView<HomePageController> {
       if (controller.sharedFile != null) {
         return const ShareLinkView();
       }
+      if (controller.fileInfo != null) {
+        return const FileInfoView();
+      }
       return const UploadView();
     });
   }

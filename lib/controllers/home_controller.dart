@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:file_transfer/models/file_info.dart';
 import 'package:file_transfer/routes.dart';
 import 'package:file_transfer/utils/platform_helper.dart';
 import 'package:file_transfer_sdk/file_transfer_sdk.dart';
@@ -14,12 +15,14 @@ import 'package:toastification/toastification.dart';
 
 class HomePageController extends GetxController {
   final _sharedFile = Rxn<SharedFile>();
+  final _fileInfo = Rxn<FileInfo>();
   final _isUploading = false.obs;
   final _error = RxnString();
   final _isDragging = false.obs;
   final dropzoneController = Rxn<DropzoneViewController>();
 
   SharedFile? get sharedFile => _sharedFile.value;
+  FileInfo? get fileInfo => _fileInfo.value;
   bool get isUploading => _isUploading.value;
   String? get error => _error.value;
   bool get isDragging => _isDragging.value;
@@ -38,10 +41,43 @@ class HomePageController extends GetxController {
     );
   }
 
-  Future<void> handleDroppedFile(dynamic file) async {
-    _isDragging.value = false;
+  Future<void> _uploadFile(Uint8List bytes, String filename) async {
     _isUploading.value = true;
     _error.value = null;
+
+    try {
+      final mimeType = lookupMimeType(
+        filename,
+        headerBytes: bytes.take(8).toList(),
+      );
+
+      final sharedFile = await shareFile(
+        ndk: Get.find(),
+        bytes: bytes,
+        contentType: mimeType,
+        filename: filename,
+      );
+
+      _sharedFile.value = sharedFile;
+      _fileInfo.value = null;
+    } catch (e) {
+      _error.value = e.toString();
+    } finally {
+      _isUploading.value = false;
+    }
+  }
+
+  void _setFileInfo(Uint8List bytes, String filename, String? mimeType) {
+    _fileInfo.value = FileInfo(
+      name: filename,
+      size: bytes.length,
+      mimeType: mimeType,
+      bytes: bytes,
+    );
+  }
+
+  Future<void> handleDroppedFile(dynamic file) async {
+    _isDragging.value = false;
 
     try {
       String filename;
@@ -66,15 +102,7 @@ class HomePageController extends GetxController {
         headerBytes: bytes.take(8).toList(),
       );
 
-      final sharedFile = await shareFile(
-        ndk: Get.find(),
-        bytes: bytes,
-        contentType: mimeType,
-        filename: filename,
-      );
-
-      _sharedFile.value = sharedFile;
-      _isUploading.value = false;
+      _setFileInfo(bytes, filename, mimeType);
     } catch (e) {
       _error.value = e.toString();
       _isUploading.value = false;
@@ -90,45 +118,37 @@ class HomePageController extends GetxController {
   }
 
   Future<void> pickAndShareFile() async {
-    _isUploading.value = true;
-    _error.value = null;
+    final pickResult = await FilePicker.platform.pickFiles(
+      type: FileType.any,
+      withData: true,
+    );
 
-    try {
-      final pickResult = await FilePicker.platform.pickFiles(
-        type: FileType.any,
-        withData: true,
-      );
-
-      if (pickResult == null || pickResult.files.isEmpty) {
-        _isUploading.value = false;
-        return;
-      }
-
-      final file = pickResult.files.first;
-      if (file.bytes == null) {
-        _error.value = 'Unable to read file data';
-        _isUploading.value = false;
-        return;
-      }
-
-      final mimeType = lookupMimeType(
-        file.name,
-        headerBytes: file.bytes?.take(8).toList(),
-      );
-
-      final sharedFile = await shareFile(
-        ndk: Get.find(),
-        bytes: file.bytes!,
-        contentType: mimeType,
-        filename: file.name,
-      );
-
-      _sharedFile.value = sharedFile;
-      _isUploading.value = false;
-    } catch (e) {
-      _error.value = e.toString();
-      _isUploading.value = false;
+    if (pickResult == null || pickResult.files.isEmpty) {
+      return;
     }
+
+    final file = pickResult.files.first;
+    if (file.bytes == null) {
+      _error.value = 'Unable to read file data';
+      return;
+    }
+
+    final mimeType = lookupMimeType(
+      file.name,
+      headerBytes: file.bytes?.take(8).toList(),
+    );
+
+    _setFileInfo(file.bytes!, file.name, mimeType);
+  }
+
+  Future<void> startUpload() async {
+    final fileInfo = _fileInfo.value;
+    if (fileInfo == null) {
+      _error.value = 'No file selected';
+      return;
+    }
+
+    await _uploadFile(fileInfo.bytes, fileInfo.name);
   }
 
   void copyToClipboard(String text, String label) {
@@ -147,6 +167,7 @@ class HomePageController extends GetxController {
 
   void reset() {
     _sharedFile.value = null;
+    _fileInfo.value = null;
     _error.value = null;
   }
 
