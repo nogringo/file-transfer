@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:get/get.dart';
 import 'package:mime/mime.dart';
+import 'package:ndk/ndk.dart';
 import 'package:toastification/toastification.dart';
 
 class HomePageController extends GetxController {
@@ -52,7 +53,7 @@ class HomePageController extends GetxController {
       );
 
       final sharedFile = await shareFile(
-        ndk: Get.find(),
+        ndk: Get.find<Ndk>(),
         bytes: bytes,
         contentType: mimeType,
         filename: filename,
