@@ -33,6 +33,8 @@ void main() async {
       pubkey: keyPair.publicKey,
       privkey: keyPair.privateKey!,
     );
+
+    await ndkFlutter.saveAccountsState();
   }
 
   runApp(const MainApp());

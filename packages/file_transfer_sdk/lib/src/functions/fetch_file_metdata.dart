@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:file_transfer_sdk/file_transfer_sdk.dart';
 import 'package:ndk/ndk.dart';
 import 'package:ndk/shared/nips/nip01/bip340.dart';
@@ -12,14 +14,14 @@ Future<FileMetadata> fetchFileMetadata({
     filter: Filter(ids: [decodedNevent.eventId]),
   );
 
-  Nip01Event? giftWrap;
-  await for (var event in query.stream) {
-    if (event.id != decodedNevent.eventId) continue;
-    giftWrap = event;
+  Nip01Event? event;
+  await for (var e in query.stream) {
+    if (e.id != decodedNevent.eventId) continue;
+    event = e;
     break;
   }
 
-  if (giftWrap == null) throw Exception("Event not found");
+  if (event == null) throw Exception("Event not found");
 
   final privateKey = Nip19.decode(sharedFile.encodedPrivateKey);
   final publicKey = Bip340.getPublicKey(privateKey);
@@ -28,10 +30,14 @@ Future<FileMetadata> fetchFileMetadata({
     publicKey: publicKey,
   );
 
-  final event = await ndk.giftWrap.fromGiftWrap(
-    giftWrap: giftWrap,
-    customSigner: signer,
+  final decryptedContent = await signer.decryptNip44(
+    ciphertext: event.content,
+    senderPubKey: event.pubKey,
   );
 
-  return FileMetadata.fromEvent(event);
+  List<List<String>> tags = (jsonDecode(decryptedContent!) as List)
+      .map((tag) => List<String>.from(tag as List))
+      .toList();
+
+  return FileMetadata.fromTags(tags);
 }

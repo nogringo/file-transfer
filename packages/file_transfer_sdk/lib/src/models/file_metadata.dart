@@ -19,7 +19,9 @@ class FileMetadata {
     required this.size,
   });
 
-  factory FileMetadata.fromEvent(Nip01Event event) {
+  factory FileMetadata.fromTags(List<List<String>> tags) {
+    final event = Nip01Event(pubKey: "", kind: 1, tags: tags, content: "");
+
     return FileMetadata(
       fileType: event.getFirstTag('file-type'),
       filename: event.getFirstTag('filename'),

@@ -1,5 +1,6 @@
+import 'dart:convert';
+
 import 'package:ndk/ndk.dart';
-import 'package:ndk/shared/nips/nip01/bip340.dart';
 
 Future<Nip01Event> createEvent({
   required Ndk ndk,
@@ -9,32 +10,32 @@ Future<Nip01Event> createEvent({
   required String nonce,
   String? filename,
 }) async {
-  final keyPair = Bip340.generatePrivateKey();
-  final signer = Bip340EventSigner(
-    privateKey: keyPair.privateKey,
-    publicKey: keyPair.publicKey,
+  final fileMetadata = [
+    if (descriptor.type != null) ["file-type", descriptor.type!],
+    if (filename != null && filename.isNotEmpty) ["filename", filename],
+    ["encryption-algorithm", "aes-gcm"],
+    ["decryption-key", key],
+    ["decryption-nonce", nonce],
+    ["x", descriptor.sha256],
+    if (descriptor.size != null) ["size", descriptor.size.toString()],
+  ];
+
+  final signer = ndk.accounts.getLoggedAccount()!.signer;
+  final content = await ndk.accounts.getLoggedAccount()!.signer.encryptNip44(
+    plaintext: jsonEncode(fileMetadata),
+    recipientPubKey: recipientPubkey,
   );
 
-  final rumor = Nip01Event(
-    pubKey: signer.publicKey,
-    kind: 15,
+  final event = Nip01Event(
+    pubKey: signer.getPublicKey(),
+    kind: 1515,
     tags: [
-      if (descriptor.type != null) ["file-type", descriptor.type!],
-      if (filename != null && filename.isNotEmpty) ["filename", filename],
-      ["encryption-algorithm", "aes-gcm"],
-      ["decryption-key", key],
-      ["decryption-nonce", nonce],
-      ["x", descriptor.sha256],
-      if (descriptor.size != null) ["size", descriptor.size.toString()],
+      ["p", recipientPubkey],
     ],
-    content: descriptor.url,
+    content: content!,
   );
 
-  final giftwrap = await ndk.giftWrap.toGiftWrap(
-    rumor: rumor,
-    recipientPubkey: recipientPubkey,
-    customSigner: signer,
-  );
+  final signedEvent = await signer.sign(event);
 
-  return giftwrap;
+  return signedEvent;
 }
