@@ -1,17 +1,29 @@
 import 'dart:convert';
 
 import 'package:file_transfer_sdk/file_transfer_sdk.dart';
+import 'package:file_transfer_sdk/src/constants.dart';
 import 'package:ndk/ndk.dart';
 import 'package:ndk/shared/nips/nip01/bip340.dart';
 
 Future<FileMetadata> fetchFileMetadata({
-  required Ndk ndk,
   required SharedFile sharedFile,
+  Ndk? ndk,
 }) async {
+  final ndk0 =
+      ndk ??
+      Ndk(
+        NdkConfig(
+          eventVerifier: Bip340EventVerifier(),
+          cache: MemCacheManager(),
+          bootstrapRelays: [],
+        ),
+      );
+
   final decodedNevent = Nip19.decodeNevent(sharedFile.nevent);
 
-  final query = ndk.requests.query(
+  final query = ndk0.requests.query(
     filter: Filter(ids: [decodedNevent.eventId]),
+    explicitRelays: Constants.relays,
   );
 
   Nip01Event? event;
@@ -38,6 +50,8 @@ Future<FileMetadata> fetchFileMetadata({
   List<List<String>> tags = (jsonDecode(decryptedContent!) as List)
       .map((tag) => List<String>.from(tag as List))
       .toList();
+
+  if (ndk == null) await ndk0.destroy();
 
   return FileMetadata.fromTags(tags);
 }

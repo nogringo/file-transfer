@@ -10,23 +10,41 @@ import 'package:ndk/ndk.dart';
 import 'package:ndk/shared/nips/nip01/bip340.dart';
 
 Future<SharedFile> shareFile({
-  required Ndk ndk,
   required Uint8List bytes,
   String? contentType,
   String? filename,
+  Ndk? ndk,
 }) async {
+  final ndk0 =
+      ndk ??
+      Ndk(
+        NdkConfig(
+          eventVerifier: Bip340EventVerifier(),
+          cache: MemCacheManager(),
+          bootstrapRelays: [],
+        ),
+      );
+
+  if (ndk == null) {
+    final keyPair = Bip340.generatePrivateKey();
+    ndk0.accounts.loginPrivateKey(
+      pubkey: keyPair.publicKey,
+      privkey: keyPair.privateKey!,
+    );
+  }
+
   final recipientKeyPair = Bip340.generatePrivateKey();
 
   final encryptedBlob = await encryptBlob(bytes);
 
   final blobDescriptor = await uploadBlob(
-    ndk: ndk,
+    ndk: ndk0,
     data: encryptedBlob.bytes,
     contentType: contentType,
   );
 
   final event = await createEvent(
-    ndk: ndk,
+    ndk: ndk0,
     descriptor: blobDescriptor!,
     recipientPubkey: recipientKeyPair.publicKey,
     key: encryptedBlob.key,
@@ -34,7 +52,7 @@ Future<SharedFile> shareFile({
     filename: filename,
   );
 
-  await ndk.broadcast
+  await ndk0.broadcast
       .broadcast(nostrEvent: event, specificRelays: Constants.relays)
       .broadcastDoneFuture;
 
@@ -44,6 +62,8 @@ Future<SharedFile> shareFile({
   );
 
   final nsec = Nip19.encodePrivateKey(recipientKeyPair.privateKey!);
+
+  if (ndk == null) await ndk0.destroy();
 
   return SharedFile(nevent: nevent, encodedPrivateKey: nsec);
 }

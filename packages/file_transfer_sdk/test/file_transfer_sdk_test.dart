@@ -8,13 +8,21 @@ import 'package:ndk/shared/nips/nip01/bip340.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test("First test", () async {
+  test("Test without shared NDK instance", () async {
+    final originalData = Uint8List.fromList('Hello, World!'.codeUnits);
+
+    final share = await shareFile(bytes: originalData);
+    final fileMetadata = await fetchFileMetadata(sharedFile: share);
+    final fetchedData = await fetchBlob(fileMetadata: fileMetadata);
+
+    expect(fetchedData, originalData);
+  });
+
+  test("Test with shared NDK instance", () async {
     final ndk = Ndk(
       NdkConfig(eventVerifier: Bip340EventVerifier(), cache: MemCacheManager()),
     );
-
     final keyPair = Bip340.generatePrivateKey();
-
     ndk.accounts.loginPrivateKey(
       pubkey: keyPair.publicKey,
       privkey: keyPair.privateKey!,
