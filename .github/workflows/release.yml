@@ -29,14 +29,25 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
-      - name: Build APK
-        run: flutter build apk --release
-
       - name: Get version from pubspec.yaml
         id: version
         run: |
           VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Build App Bundle
+        run: flutter build appbundle --release
+
+      - name: Rename APK with app name and version
+        run: |
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/file_transfer-${{ steps.version.outputs.version }}.apk
+
+      - name: Rename AAB with app name and version
+        run: |
+          mv build/app/outputs/bundle/release/app-release.aab build/app/outputs/bundle/release/file_transfer-${{ steps.version.outputs.version }}.aab
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -46,6 +57,8 @@ jobs:
           generate_release_notes: true
           draft: false
           prerelease: false
-          files: build/app/outputs/flutter-apk/app-release.apk
+          files: |
+            build/app/outputs/flutter-apk/file_transfer-${{ steps.version.outputs.version }}.apk
+            build/app/outputs/bundle/release/file_transfer-${{ steps.version.outputs.version }}.aab
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
