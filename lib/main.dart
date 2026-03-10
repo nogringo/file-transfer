@@ -2,12 +2,14 @@ import 'package:file_transfer/constants.dart';
 import 'package:file_transfer/controllers/account_controller.dart';
 import 'package:file_transfer/controllers/file_share_controller.dart';
 import 'package:file_transfer/controllers/home_controller.dart';
+import 'package:file_transfer/l10n/app_localizations.dart';
 import 'package:file_transfer/pages/file_share_page.dart';
 import 'package:file_transfer/pages/home_page.dart';
 import 'package:file_transfer/pages/login_page.dart';
 import 'package:file_transfer/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:ndk/ndk.dart';
 import 'package:ndk/shared/nips/nip01/bip340.dart';
@@ -62,7 +64,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ToastificationWrapper(
       child: GetMaterialApp(
-        title: 'File Transfer',
+        onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
         theme: ThemeData.from(
           colorScheme: ColorScheme.fromSeed(
             seedColor: SystemTheme.accentColor.accent,
@@ -75,8 +77,14 @@ class MainApp extends StatelessWidget {
             brightness: Brightness.dark,
           ),
         ),
-        themeMode: ThemeMode.system,
-        localizationsDelegates: const [ndk_flutter.AppLocalizations.delegate],
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          AppLocalizations.delegate,
+          ndk_flutter.AppLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
         getPages: [
           GetPage(
             name: AppRoutes.home,
@@ -94,6 +102,7 @@ class MainApp extends StatelessWidget {
             }),
           ),
         ],
+        locale: kDebugMode ? Locale("fr") : null,
       ),
     );
   }

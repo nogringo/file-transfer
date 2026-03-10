@@ -1,4 +1,5 @@
 import 'package:file_transfer/controllers/home_controller.dart';
+import 'package:file_transfer/l10n/app_localizations.dart';
 import 'package:file_transfer/models/file_info.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,10 +12,11 @@ class FileInfoView extends GetView<HomePageController> {
     final fileInfo = controller.fileInfo;
     final isSmallScreen = MediaQuery.of(context).size.width < 600;
     final colorScheme = Theme.of(context).colorScheme;
+    final t = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('File Ready to Upload'),
+        title: Text(t.fileReadyToUpload),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: controller.reset,
@@ -36,7 +38,7 @@ class FileInfoView extends GetView<HomePageController> {
                 ),
                 SizedBox(height: isSmallScreen ? 20 : 24),
                 Text(
-                  'File selected',
+                  t.fileSelected,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: isSmallScreen ? 16 : 18,
@@ -65,7 +67,7 @@ class FileInfoView extends GetView<HomePageController> {
                           )
                         : const Icon(Icons.cloud_upload),
                     label: Text(
-                      controller.isUploading ? 'Uploading...' : 'Upload File',
+                      controller.isUploading ? t.uploading : t.uploadFile,
                     ),
                   ),
                 ),
@@ -73,7 +75,7 @@ class FileInfoView extends GetView<HomePageController> {
                 OutlinedButton.icon(
                   onPressed: controller.reset,
                   icon: const Icon(Icons.refresh),
-                  label: const Text('Select Different File'),
+                  label: Text(t.selectDifferentFile),
                 ),
                 Obx(() {
                   if (controller.error != null) {
@@ -124,31 +126,32 @@ class FileInfoView extends GetView<HomePageController> {
     FileInfo fileInfo,
     ColorScheme colorScheme,
   ) {
+    final t = AppLocalizations.of(context);
     return Card(
       child: Padding(
         padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildInfoRow('Name:', fileInfo.name, isSmallScreen, colorScheme),
+            _buildInfoRow(t.name, fileInfo.name, isSmallScreen, colorScheme),
             SizedBox(height: isSmallScreen ? 12 : 16),
             _buildInfoRow(
-              'Size:',
+              t.size,
               _formatFileSize(fileInfo.size),
               isSmallScreen,
               colorScheme,
             ),
             SizedBox(height: isSmallScreen ? 12 : 16),
             _buildInfoRow(
-              'Type:',
-              fileInfo.mimeType ?? 'Unknown',
+              t.type,
+              fileInfo.mimeType ?? t.unknown,
               isSmallScreen,
               colorScheme,
             ),
             if (fileInfo.lastModified != null) ...[
               SizedBox(height: isSmallScreen ? 12 : 16),
               _buildInfoRow(
-                'Modified:',
+                t.modified,
                 _formatDate(fileInfo.lastModified!),
                 isSmallScreen,
                 colorScheme,

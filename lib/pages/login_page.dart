@@ -1,3 +1,4 @@
+import 'package:file_transfer/l10n/app_localizations.dart';
 import 'package:file_transfer/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,10 +18,11 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ndkFlutter = Get.find<NdkFlutter>();
+    final t = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Connect to Nostr'),
+        title: Text(t.connectToNostr),
         leading: IconButton(
           icon: const BackButtonIcon(),
           onPressed: () => _navigateBack(context),

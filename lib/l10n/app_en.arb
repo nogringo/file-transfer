@@ -1,0 +1,172 @@
+{
+  "@@locale": "en",
+  "appTitle": "File Transfer",
+  "@appTitle": {
+    "description": "Application title"
+  },
+  "connectToNostr": "Connect to Nostr",
+  "@connectToNostr": {
+    "description": "Login page title"
+  },
+  "login": "Login",
+  "@login": {
+    "description": "Login button"
+  },
+  "anonymous": "Anonymous",
+  "@anonymous": {
+    "description": "Anonymous account label"
+  },
+  "current": "Current",
+  "@current": {
+    "description": "Current account label"
+  },
+  "addAccount": "Add account",
+  "@addAccount": {
+    "description": "Add account button"
+  },
+  "logout": "Logout",
+  "@logout": {
+    "description": "Logout button"
+  },
+  "dragDropFile": "Drag & drop a file or select to share",
+  "@dragDropFile": {
+    "description": "Upload instruction text"
+  },
+  "selectFile": "Select File",
+  "@selectFile": {
+    "description": "Select file button"
+  },
+  "uploading": "Uploading...",
+  "@uploading": {
+    "description": "Uploading status"
+  },
+  "pasteShareLink": "Paste Share Link",
+  "@pasteShareLink": {
+    "description": "Paste link button"
+  },
+  "dropFileToUpload": "Drop file to upload",
+  "@dropFileToUpload": {
+    "description": "Drop zone text"
+  },
+  "fileReadyToUpload": "File Ready to Upload",
+  "@fileReadyToUpload": {
+    "description": "File info page title"
+  },
+  "fileSelected": "File selected",
+  "@fileSelected": {
+    "description": "File selected status"
+  },
+  "uploadFile": "Upload File",
+  "@uploadFile": {
+    "description": "Upload file button"
+  },
+  "selectDifferentFile": "Select Different File",
+  "@selectDifferentFile": {
+    "description": "Select different file button"
+  },
+  "name": "Name:",
+  "@name": {
+    "description": "File name label"
+  },
+  "size": "Size:",
+  "@size": {
+    "description": "File size label"
+  },
+  "type": "Type:",
+  "@type": {
+    "description": "File type label"
+  },
+  "modified": "Modified:",
+  "@modified": {
+    "description": "Modified date label"
+  },
+  "unknown": "Unknown",
+  "@unknown": {
+    "description": "Unknown file type"
+  },
+  "shareLinkReady": "Share Link Ready",
+  "@shareLinkReady": {
+    "description": "Share link page title"
+  },
+  "fileReadyToShare": "File ready to share!",
+  "@fileReadyToShare": {
+    "description": "File ready status"
+  },
+  "copyShareLink": "Copy Share Link",
+  "@copyShareLink": {
+    "description": "Copy link button"
+  },
+  "shareAnotherFile": "Share Another File",
+  "@shareAnotherFile": {
+    "description": "Share another file button"
+  },
+  "shareLink": "Share Link:",
+  "@shareLink": {
+    "description": "Share link label"
+  },
+  "eventNevent": "Event (nevent):",
+  "@eventNevent": {
+    "description": "Nevent label"
+  },
+  "privateKeyNsec": "Private Key (nsec):",
+  "@privateKeyNsec": {
+    "description": "Private key label"
+  },
+  "downloadFile": "Download File",
+  "@downloadFile": {
+    "description": "Download page title"
+  },
+  "fetchingMetadata": "Fetching file metadata...",
+  "@fetchingMetadata": {
+    "description": "Loading metadata text"
+  },
+  "fileReadyToDownload": "File Ready to Download",
+  "@fileReadyToDownload": {
+    "description": "Download ready title"
+  },
+  "download": "Download",
+  "@download": {
+    "description": "Download button"
+  },
+  "downloading": "Downloading...",
+  "@downloading": {
+    "description": "Downloading status"
+  },
+  "fileDownloadedSuccess": "File downloaded successfully!",
+  "@fileDownloadedSuccess": {
+    "description": "Download success message"
+  },
+  "fileSaved": "File saved",
+  "@fileSaved": {
+    "description": "File saved toast message"
+  },
+  "failedToSave": "Failed to save: {error}",
+  "@failedToSave": {
+    "description": "Failed to save toast message",
+    "parameters": ["error"]
+  },
+  "unableToReadFile": "Unable to read file data",
+  "@unableToReadFile": {
+    "description": "Error when file bytes cannot be read"
+  },
+  "noFileSelected": "No file selected",
+  "@noFileSelected": {
+    "description": "Error when no file is selected for upload"
+  },
+  "shareLinkCopied": "Share link copied to clipboard",
+  "@shareLinkCopied": {
+    "description": "Toast message when share link is copied"
+  },
+  "noLinkFound": "No link found in clipboard",
+  "@noLinkFound": {
+    "description": "Toast message when no link is in clipboard"
+  },
+  "invalidShareLink": "Invalid share link format",
+  "@invalidShareLink": {
+    "description": "Toast message when share link format is invalid"
+  },
+  "selectFileTitle": "Select File",
+  "@selectFileTitle": {
+    "description": "File picker dialog title"
+  }
+}

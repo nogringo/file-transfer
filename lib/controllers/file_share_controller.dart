@@ -2,6 +2,7 @@ import 'package:file_saver/file_saver.dart';
 import 'package:file_transfer_sdk/file_transfer_sdk.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:file_transfer/l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:ndk/ndk.dart';
 import 'package:path/path.dart' as p;
@@ -116,6 +117,8 @@ class FileShareController extends GetxController {
   Future<void> saveFile() async {
     if (_decryptedData.value == null) return;
 
+    final t = AppLocalizations.of(Get.context!);
+
     try {
       final mimeType = _metadata.value?.fileType ?? 'application/octet-stream';
       final filename = _metadata.value?.filename ?? 'downloaded_file';
@@ -134,7 +137,7 @@ class FileShareController extends GetxController {
       toastification.show(
         type: ToastificationType.success,
         style: ToastificationStyle.flatColored,
-        title: const Text('File saved'),
+        title: Text(t.fileSaved),
         autoCloseDuration: const Duration(seconds: 2),
         alignment: Alignment.bottomCenter,
       );
@@ -142,7 +145,7 @@ class FileShareController extends GetxController {
       toastification.show(
         type: ToastificationType.error,
         style: ToastificationStyle.flatColored,
-        title: Text('Failed to save: $e'),
+        title: Text(t.failedToSave(e)),
         autoCloseDuration: const Duration(seconds: 3),
         alignment: Alignment.bottomCenter,
       );

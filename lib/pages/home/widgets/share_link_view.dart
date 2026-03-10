@@ -1,4 +1,5 @@
 import 'package:file_transfer/controllers/home_controller.dart';
+import 'package:file_transfer/l10n/app_localizations.dart';
 import 'package:file_transfer/utils/platform_helper.dart';
 import 'package:file_transfer_sdk/file_transfer_sdk.dart';
 import 'package:flutter/material.dart';
@@ -12,10 +13,11 @@ class ShareLinkView extends GetView<HomePageController> {
     final sharedFile = controller.sharedFile!;
     final isSmallScreen = MediaQuery.of(context).size.width < 600;
     final colorScheme = Theme.of(context).colorScheme;
+    final t = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Share Link Ready'),
+        title: Text(t.shareLinkReady),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: controller.reset,
@@ -37,7 +39,7 @@ class ShareLinkView extends GetView<HomePageController> {
                 ),
                 SizedBox(height: isSmallScreen ? 20 : 24),
                 Text(
-                  'File ready to share!',
+                  t.fileReadyToShare,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: isSmallScreen ? 16 : 18,
@@ -51,13 +53,13 @@ class ShareLinkView extends GetView<HomePageController> {
                 FilledButton.icon(
                   onPressed: controller.copyShareLink,
                   icon: const Icon(Icons.share),
-                  label: const Text('Copy Share Link'),
+                  label: Text(t.copyShareLink),
                 ),
                 SizedBox(height: isSmallScreen ? 6 : 8),
                 OutlinedButton.icon(
                   onPressed: controller.reset,
                   icon: const Icon(Icons.add),
-                  label: const Text('Share Another File'),
+                  label: Text(t.shareAnotherFile),
                 ),
               ],
             ),
@@ -73,6 +75,7 @@ class ShareLinkView extends GetView<HomePageController> {
     SharedFile sharedFile,
     ColorScheme colorScheme,
   ) {
+    final t = AppLocalizations.of(context);
     final shareLink = PlatformHelper.buildShareLink(
       sharedFile.nevent,
       sharedFile.encodedPrivateKey,
@@ -84,17 +87,17 @@ class ShareLinkView extends GetView<HomePageController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildInfoRow('Share Link:', shareLink, isSmallScreen, colorScheme),
+            _buildInfoRow(t.shareLink, shareLink, isSmallScreen, colorScheme),
             SizedBox(height: isSmallScreen ? 12 : 16),
             _buildInfoRow(
-              'Event (nevent):',
+              t.eventNevent,
               sharedFile.nevent,
               isSmallScreen,
               colorScheme,
             ),
             SizedBox(height: isSmallScreen ? 12 : 16),
             _buildInfoRow(
-              'Private Key (nsec):',
+              t.privateKeyNsec,
               sharedFile.encodedPrivateKey,
               isSmallScreen,
               colorScheme,

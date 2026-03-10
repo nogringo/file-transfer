@@ -1,8 +1,8 @@
-- [ ] Translations
+- [x] Translations
 - [x] Drop file
 - [x] Keep file name
 - [ ] Use streams
-- [ ] Better UI/UX
+- [x] Better UI/UX
 - [x] Remove snackbars
 - [x] Use https://pub.dev/packages/webcrypto or https://pub.dev/packages/cryptography for efficient web crypto operations
 - [ ] 2 options: everyone can delete with the link | only the creator can delete

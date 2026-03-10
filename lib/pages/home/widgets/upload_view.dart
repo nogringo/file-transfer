@@ -5,6 +5,7 @@ import 'package:file_transfer/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
+import 'package:file_transfer/l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:ndk/ndk.dart';
 import 'package:ndk_flutter/ndk_flutter.dart';
@@ -19,10 +20,11 @@ class UploadView extends GetView<HomePageController> {
     final accountController = Get.find<AccountController>();
     final ndkFlutter = Get.find<NdkFlutter>();
     final ndk = Get.find<Ndk>();
+    final t = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('File Transfer'),
+        title: Text(t.appTitle),
         actions: [
           GetBuilder<AccountController>(
             builder: (_) {
@@ -35,7 +37,7 @@ class UploadView extends GetView<HomePageController> {
                   child: TextButton.icon(
                     onPressed: () => Get.toNamed(AppRoutes.login),
                     icon: const Icon(Icons.login),
-                    label: const Text('Login'),
+                    label: Text(t.login),
                   ),
                 );
               }
@@ -98,7 +100,7 @@ class UploadView extends GetView<HomePageController> {
                                 title:
                                     account.pubkey ==
                                         accountController.anonymousPubkey
-                                    ? const Text('Anonymous')
+                                    ? Text(t.anonymous)
                                     : NName(
                                         ndkFlutter: ndkFlutter,
                                         pubkey: account.pubkey,
@@ -112,7 +114,7 @@ class UploadView extends GetView<HomePageController> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                 subtitle: account.pubkey == currentPubkey
-                                    ? const Text('Current')
+                                    ? Text(t.current)
                                     : null,
                                 onTap: () {
                                   Navigator.pop(ctx);
@@ -125,7 +127,7 @@ class UploadView extends GetView<HomePageController> {
                             const Divider(),
                             ListTile(
                               leading: const Icon(Icons.add_circle_outline),
-                              title: const Text('Add account'),
+                              title: Text(t.addAccount),
                               onTap: () {
                                 Navigator.pop(ctx);
                                 Get.toNamed(AppRoutes.login);
@@ -137,7 +139,7 @@ class UploadView extends GetView<HomePageController> {
                                 color: colorScheme.error,
                               ),
                               title: Text(
-                                'Logout',
+                                t.logout,
                                 style: TextStyle(color: colorScheme.error),
                               ),
                               onTap: () {
@@ -205,7 +207,7 @@ class UploadView extends GetView<HomePageController> {
                                 title:
                                     account.pubkey ==
                                         accountController.anonymousPubkey
-                                    ? const Text('Anonymous')
+                                    ? Text(t.anonymous)
                                     : NName(
                                         ndkFlutter: ndkFlutter,
                                         pubkey: account.pubkey,
@@ -219,18 +221,18 @@ class UploadView extends GetView<HomePageController> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                 subtitle: account.pubkey == currentPubkey
-                                    ? const Text('Current')
+                                    ? Text(t.current)
                                     : null,
                                 contentPadding: EdgeInsets.zero,
                                 visualDensity: VisualDensity.compact,
                               ),
                             ),
                           const PopupMenuDivider(),
-                          const PopupMenuItem(
+                          PopupMenuItem(
                             value: 'add_account',
                             child: ListTile(
                               leading: Icon(Icons.add_circle_outline),
-                              title: Text('Add account'),
+                              title: Text(t.addAccount),
                               contentPadding: EdgeInsets.zero,
                               visualDensity: VisualDensity.compact,
                             ),
@@ -243,7 +245,7 @@ class UploadView extends GetView<HomePageController> {
                                 color: colorScheme.error,
                               ),
                               title: Text(
-                                'Logout',
+                                t.logout,
                                 style: TextStyle(color: colorScheme.error),
                               ),
                               contentPadding: EdgeInsets.zero,
@@ -272,6 +274,7 @@ class UploadView extends GetView<HomePageController> {
     bool isSmallScreen,
     ColorScheme colorScheme,
   ) {
+    final t = AppLocalizations.of(context);
     return Stack(
       children: [
         Obx(
@@ -293,7 +296,7 @@ class UploadView extends GetView<HomePageController> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'Drop file to upload',
+                            t.dropFileToUpload,
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -333,6 +336,7 @@ class UploadView extends GetView<HomePageController> {
     bool isSmallScreen,
     ColorScheme colorScheme,
   ) {
+    final t = AppLocalizations.of(context);
     return DropTarget(
       onDragDone: (event) {
         if (event.files.isNotEmpty) {
@@ -366,7 +370,7 @@ class UploadView extends GetView<HomePageController> {
                             ),
                             const SizedBox(height: 16),
                             Text(
-                              'Drop file to upload',
+                              t.dropFileToUpload,
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
@@ -391,6 +395,7 @@ class UploadView extends GetView<HomePageController> {
     bool isSmallScreen,
     ColorScheme colorScheme,
   ) {
+    final t = AppLocalizations.of(context);
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 16 : 24),
       child: Center(
@@ -407,7 +412,7 @@ class UploadView extends GetView<HomePageController> {
               ),
               SizedBox(height: isSmallScreen ? 20 : 24),
               Text(
-                'Drag & drop a file or select to share',
+                t.dragDropFile,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: isSmallScreen ? 16 : 18,
@@ -428,7 +433,7 @@ class UploadView extends GetView<HomePageController> {
                         )
                       : const Icon(Icons.upload_file),
                   label: Text(
-                    controller.isUploading ? 'Uploading...' : 'Select File',
+                    controller.isUploading ? t.uploading : t.selectFile,
                   ),
                 ),
               ),
@@ -436,7 +441,7 @@ class UploadView extends GetView<HomePageController> {
               OutlinedButton.icon(
                 onPressed: controller.pasteAndOpenLink,
                 icon: const Icon(Icons.paste),
-                label: const Text('Paste Share Link'),
+                label: Text(t.pasteShareLink),
               ),
               Obx(() {
                 if (controller.error != null) {

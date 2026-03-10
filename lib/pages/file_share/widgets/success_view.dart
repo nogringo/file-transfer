@@ -1,4 +1,5 @@
 import 'package:file_transfer/controllers/file_share_controller.dart';
+import 'package:file_transfer/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,6 +12,7 @@ class SuccessView extends GetView<FileShareController> {
     final decryptedData = controller.decryptedData!;
     final isSmallScreen = MediaQuery.of(context).size.width < 600;
     final colorScheme = Theme.of(context).colorScheme;
+    final t = AppLocalizations.of(context);
 
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 16 : 24),
@@ -28,7 +30,7 @@ class SuccessView extends GetView<FileShareController> {
               ),
               SizedBox(height: isSmallScreen ? 20 : 24),
               Text(
-                'File downloaded successfully!',
+                t.fileDownloadedSuccess,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: isSmallScreen ? 16 : 18,
@@ -38,7 +40,7 @@ class SuccessView extends GetView<FileShareController> {
               ),
               SizedBox(height: isSmallScreen ? 6 : 8),
               Text(
-                'Size: ${_formatBytes(metadata?.size ?? decryptedData.length)}',
+                '${t.size} ${_formatBytes(metadata?.size ?? decryptedData.length)}',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: isSmallScreen ? 13 : 14,

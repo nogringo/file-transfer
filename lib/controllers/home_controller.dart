@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:file_transfer/l10n/app_localizations.dart';
 import 'package:file_transfer/models/file_info.dart';
 import 'package:file_transfer/routes.dart';
 import 'package:file_transfer/utils/platform_helper.dart';
@@ -40,6 +41,20 @@ class HomePageController extends GetxController {
       autoCloseDuration: const Duration(seconds: 2),
       alignment: Alignment.bottomCenter,
     );
+  }
+
+  String _getToastMessage(String key) {
+    final context = Get.context;
+    if (context == null) return key;
+    final t = AppLocalizations.of(context);
+    return switch (key) {
+      'unableToReadFile' => t.unableToReadFile,
+      'noFileSelected' => t.noFileSelected,
+      'shareLinkCopied' => t.shareLinkCopied,
+      'noLinkFound' => t.noLinkFound,
+      'invalidShareLink' => t.invalidShareLink,
+      _ => key,
+    };
   }
 
   Future<void> _uploadFile(Uint8List bytes, String filename) async {
@@ -119,9 +134,14 @@ class HomePageController extends GetxController {
   }
 
   Future<void> pickAndShareFile() async {
+    final context = Get.context;
+    if (context == null) return;
+    final t = AppLocalizations.of(context);
+
     final pickResult = await FilePicker.platform.pickFiles(
       type: FileType.any,
       withData: true,
+      dialogTitle: t.selectFileTitle,
     );
 
     if (pickResult == null || pickResult.files.isEmpty) {
@@ -130,7 +150,7 @@ class HomePageController extends GetxController {
 
     final file = pickResult.files.first;
     if (file.bytes == null) {
-      _error.value = 'Unable to read file data';
+      _error.value = _getToastMessage('unableToReadFile');
       return;
     }
 
@@ -145,16 +165,16 @@ class HomePageController extends GetxController {
   Future<void> startUpload() async {
     final fileInfo = _fileInfo.value;
     if (fileInfo == null) {
-      _error.value = 'No file selected';
+      _error.value = _getToastMessage('noFileSelected');
       return;
     }
 
     await _uploadFile(fileInfo.bytes, fileInfo.name);
   }
 
-  void copyToClipboard(String text, String label) {
+  void copyToClipboard(String text) {
     Clipboard.setData(ClipboardData(text: text));
-    _showToast('$label copied to clipboard');
+    _showToast(_getToastMessage('shareLinkCopied'));
   }
 
   void copyShareLink() {
@@ -163,7 +183,7 @@ class HomePageController extends GetxController {
       _sharedFile.value!.nevent,
       _sharedFile.value!.encodedPrivateKey,
     );
-    copyToClipboard(link, 'Share link');
+    copyToClipboard(link);
   }
 
   void reset() {
@@ -177,10 +197,7 @@ class HomePageController extends GetxController {
     final link = clipboardData?.text;
 
     if (link == null || link.isEmpty) {
-      _showToast(
-        'No link found in clipboard',
-        type: ToastificationType.warning,
-      );
+      _showToast(_getToastMessage('noLinkFound'), type: ToastificationType.warning);
       return;
     }
 
@@ -204,6 +221,6 @@ class HomePageController extends GetxController {
       // Invalid URL
     }
 
-    _showToast('Invalid share link format', type: ToastificationType.error);
+    _showToast(_getToastMessage('invalidShareLink'), type: ToastificationType.error);
   }
 }

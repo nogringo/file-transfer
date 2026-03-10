@@ -1,4 +1,5 @@
 import 'package:file_transfer/controllers/file_share_controller.dart';
+import 'package:file_transfer/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,6 +11,7 @@ class ReadyView extends GetView<FileShareController> {
     final metadata = controller.metadata;
     final isSmallScreen = MediaQuery.of(context).size.width < 600;
     final colorScheme = Theme.of(context).colorScheme;
+    final t = AppLocalizations.of(context);
 
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 16 : 24),
@@ -27,7 +29,7 @@ class ReadyView extends GetView<FileShareController> {
               ),
               SizedBox(height: isSmallScreen ? 20 : 24),
               Text(
-                'File Ready to Download',
+                t.fileReadyToDownload,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: isSmallScreen ? 16 : 18,
@@ -58,7 +60,7 @@ class ReadyView extends GetView<FileShareController> {
                         )
                       : const Icon(Icons.download),
                   label: Text(
-                    controller.hasStarted ? 'Downloading...' : 'Download',
+                    controller.hasStarted ? t.downloading : t.download,
                   ),
                 ),
               ),
@@ -79,6 +81,7 @@ class ReadyView extends GetView<FileShareController> {
     dynamic metadata,
     ColorScheme colorScheme,
   ) {
+    final t = AppLocalizations.of(context);
     return Card(
       child: Padding(
         padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
@@ -90,7 +93,7 @@ class ReadyView extends GetView<FileShareController> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Name:',
+                    t.name,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: isSmallScreen ? 13 : 14,
@@ -117,7 +120,7 @@ class ReadyView extends GetView<FileShareController> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Type:',
+                    t.type,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: isSmallScreen ? 13 : 14,
@@ -142,7 +145,7 @@ class ReadyView extends GetView<FileShareController> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Size:',
+                    t.size,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: isSmallScreen ? 13 : 14,

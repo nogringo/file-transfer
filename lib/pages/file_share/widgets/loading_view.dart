@@ -1,3 +1,4 @@
+import 'package:file_transfer/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -7,6 +8,7 @@ class LoadingView extends GetView {
   @override
   Widget build(BuildContext context) {
     final isSmallScreen = MediaQuery.of(context).size.width < 600;
+    final t = AppLocalizations.of(context);
 
     return Center(
       child: Padding(
@@ -18,7 +20,7 @@ class LoadingView extends GetView {
             const CircularProgressIndicator(),
             SizedBox(height: isSmallScreen ? 12 : 16),
             Text(
-              'Fetching file metadata...',
+              t.fetchingMetadata,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: isSmallScreen ? 14 : 16,

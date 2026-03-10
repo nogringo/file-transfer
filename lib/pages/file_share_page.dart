@@ -1,3 +1,4 @@
+import 'package:file_transfer/l10n/app_localizations.dart';
 import 'package:file_transfer/pages/file_share/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,8 +9,10 @@ class FileSharePage extends GetView<FileShareController> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Download File')),
+      appBar: AppBar(title: Text(t.downloadFile)),
       body: GetBuilder<FileShareController>(
         builder: (controller) {
           if (controller.isFetchingMetadata) {
