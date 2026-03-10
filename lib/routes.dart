@@ -1,5 +1,6 @@
 class AppRoutes {
   static const home = '/';
+  static const login = '/login';
   static const fileShare = '/f/:nevent/:encodedPrivateKey';
 
   static String fileShareRoute(String nevent, String encodedPrivateKey) {

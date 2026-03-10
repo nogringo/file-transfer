@@ -1,9 +1,13 @@
 import 'package:desktop_drop/desktop_drop.dart';
+import 'package:file_transfer/controllers/account_controller.dart';
 import 'package:file_transfer/controllers/home_controller.dart';
+import 'package:file_transfer/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:get/get.dart';
+import 'package:ndk/ndk.dart';
+import 'package:ndk_flutter/ndk_flutter.dart';
 
 class UploadView extends GetView<HomePageController> {
   const UploadView({super.key});
@@ -12,9 +16,251 @@ class UploadView extends GetView<HomePageController> {
   Widget build(BuildContext context) {
     final isSmallScreen = MediaQuery.of(context).size.width < 600;
     final colorScheme = Theme.of(context).colorScheme;
+    final accountController = Get.find<AccountController>();
+    final ndkFlutter = Get.find<NdkFlutter>();
+    final ndk = Get.find<Ndk>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('File Transfer')),
+      appBar: AppBar(
+        title: const Text('File Transfer'),
+        actions: [
+          GetBuilder<AccountController>(
+            builder: (_) {
+              if (accountController.isLoading) {
+                return const SizedBox.shrink();
+              }
+              if (!accountController.hasRealAccount) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: TextButton.icon(
+                    onPressed: () => Get.toNamed(AppRoutes.login),
+                    icon: const Icon(Icons.login),
+                    label: const Text('Login'),
+                  ),
+                );
+              }
+              final pubkey = accountController.pubkey;
+              if (pubkey == null) {
+                return const SizedBox.shrink();
+              }
+              return Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: GestureDetector(
+                  onTap: () {
+                    final accounts = ndk.accounts.accounts.values;
+                    final currentPubkey = ndk.accounts
+                        .getLoggedAccount()
+                        ?.pubkey;
+
+                    if (isSmallScreen) {
+                      showModalBottomSheet<String>(
+                        context: context,
+                        showDragHandle: true,
+                        builder: (ctx) => Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            for (final account in accounts)
+                              ListTile(
+                                leading: SizedBox(
+                                  width: 32,
+                                  height: 32,
+                                  child: account.pubkey == currentPubkey
+                                      ? Stack(
+                                          children: [
+                                            NPicture(
+                                              ndkFlutter: ndkFlutter,
+                                              pubkey: account.pubkey,
+                                            ),
+                                            Positioned(
+                                              bottom: 0,
+                                              right: 0,
+                                              child: Container(
+                                                width: 10,
+                                                height: 10,
+                                                decoration: BoxDecoration(
+                                                  color: colorScheme.primary,
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: colorScheme.surface,
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : NPicture(
+                                          ndkFlutter: ndkFlutter,
+                                          pubkey: account.pubkey,
+                                        ),
+                                ),
+                                title:
+                                    account.pubkey ==
+                                        accountController.anonymousPubkey
+                                    ? const Text('Anonymous')
+                                    : NName(
+                                        ndkFlutter: ndkFlutter,
+                                        pubkey: account.pubkey,
+                                        style: TextStyle(
+                                          fontWeight:
+                                              account.pubkey == currentPubkey
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                subtitle: account.pubkey == currentPubkey
+                                    ? const Text('Current')
+                                    : null,
+                                onTap: () {
+                                  Navigator.pop(ctx);
+                                  accountController.handleSwitchAccount(
+                                    account.pubkey,
+                                  );
+                                },
+                              ),
+                            const SizedBox(height: 8),
+                            const Divider(),
+                            ListTile(
+                              leading: const Icon(Icons.add_circle_outline),
+                              title: const Text('Add account'),
+                              onTap: () {
+                                Navigator.pop(ctx);
+                                Get.toNamed(AppRoutes.login);
+                              },
+                            ),
+                            ListTile(
+                              leading: Icon(
+                                Icons.logout,
+                                color: colorScheme.error,
+                              ),
+                              title: Text(
+                                'Logout',
+                                style: TextStyle(color: colorScheme.error),
+                              ),
+                              onTap: () {
+                                Navigator.pop(ctx);
+                                accountController.handleLogout();
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      showMenu<String>(
+                        context: context,
+                        position: RelativeRect.fromLTRB(
+                          MediaQuery.of(context).size.width,
+                          0,
+                          0,
+                          0,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          side: BorderSide(
+                            color: colorScheme.outlineVariant,
+                            width: 1,
+                          ),
+                        ),
+                        items: [
+                          for (final account in accounts)
+                            PopupMenuItem<String>(
+                              value: 'switch_${account.pubkey}',
+                              child: ListTile(
+                                leading: SizedBox(
+                                  width: 32,
+                                  height: 32,
+                                  child: account.pubkey == currentPubkey
+                                      ? Stack(
+                                          children: [
+                                            NPicture(
+                                              ndkFlutter: ndkFlutter,
+                                              pubkey: account.pubkey,
+                                            ),
+                                            Positioned(
+                                              bottom: 0,
+                                              right: 0,
+                                              child: Container(
+                                                width: 10,
+                                                height: 10,
+                                                decoration: BoxDecoration(
+                                                  color: colorScheme.primary,
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: colorScheme.surface,
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : NPicture(
+                                          ndkFlutter: ndkFlutter,
+                                          pubkey: account.pubkey,
+                                        ),
+                                ),
+                                title:
+                                    account.pubkey ==
+                                        accountController.anonymousPubkey
+                                    ? const Text('Anonymous')
+                                    : NName(
+                                        ndkFlutter: ndkFlutter,
+                                        pubkey: account.pubkey,
+                                        style: TextStyle(
+                                          fontWeight:
+                                              account.pubkey == currentPubkey
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                subtitle: account.pubkey == currentPubkey
+                                    ? const Text('Current')
+                                    : null,
+                                contentPadding: EdgeInsets.zero,
+                                visualDensity: VisualDensity.compact,
+                              ),
+                            ),
+                          const PopupMenuDivider(),
+                          const PopupMenuItem(
+                            value: 'add_account',
+                            child: ListTile(
+                              leading: Icon(Icons.add_circle_outline),
+                              title: Text('Add account'),
+                              contentPadding: EdgeInsets.zero,
+                              visualDensity: VisualDensity.compact,
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'logout',
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.logout,
+                                color: colorScheme.error,
+                              ),
+                              title: Text(
+                                'Logout',
+                                style: TextStyle(color: colorScheme.error),
+                              ),
+                              contentPadding: EdgeInsets.zero,
+                              visualDensity: VisualDensity.compact,
+                            ),
+                          ),
+                        ],
+                      ).then(accountController.handleMenuSelection);
+                    }
+                  },
+                  child: NPicture(ndkFlutter: ndkFlutter),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: kIsWeb
           ? _buildWebDropzone(context, isSmallScreen, colorScheme)
           : _buildDesktopDropzone(context, isSmallScreen, colorScheme),

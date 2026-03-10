@@ -1,7 +1,10 @@
+import 'package:file_transfer/constants.dart';
+import 'package:file_transfer/controllers/account_controller.dart';
 import 'package:file_transfer/controllers/file_share_controller.dart';
 import 'package:file_transfer/controllers/home_controller.dart';
 import 'package:file_transfer/pages/file_share_page.dart';
 import 'package:file_transfer/pages/home_page.dart';
+import 'package:file_transfer/pages/login_page.dart';
 import 'package:file_transfer/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +12,9 @@ import 'package:get/get.dart';
 import 'package:ndk/ndk.dart';
 import 'package:ndk/shared/nips/nip01/bip340.dart';
 import 'package:ndk_flutter/ndk_flutter.dart';
+import 'package:ndk_flutter/l10n/app_localizations.dart' as ndk_flutter;
 import 'package:toastification/toastification.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,15 +32,21 @@ void main() async {
 
   await ndkFlutter.restoreAccountsState();
 
+  final prefs = await SharedPreferences.getInstance();
+
   if (ndk.accounts.accounts.isEmpty) {
+    // First time: create anonymous account
     final keyPair = Bip340.generatePrivateKey();
     ndk.accounts.loginPrivateKey(
       pubkey: keyPair.publicKey,
       privkey: keyPair.privateKey!,
     );
-
     await ndkFlutter.saveAccountsState();
+    await prefs.setString(anonymousPubkeyKey, keyPair.publicKey);
   }
+
+  // Initialize AccountController after NDK is set up
+  Get.put(AccountController());
 
   runApp(const MainApp());
 }
@@ -50,6 +61,7 @@ class MainApp extends StatelessWidget {
         title: 'File Transfer',
         theme: ThemeData.light(),
         darkTheme: ThemeData.dark(),
+        localizationsDelegates: const [ndk_flutter.AppLocalizations.delegate],
         getPages: [
           GetPage(
             name: AppRoutes.home,
@@ -58,6 +70,7 @@ class MainApp extends StatelessWidget {
               Get.put(HomePageController());
             }),
           ),
+          GetPage(name: AppRoutes.login, page: () => const LoginPage()),
           GetPage(
             name: AppRoutes.fileShare,
             page: () => const FileSharePage(),
