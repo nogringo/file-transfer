@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   desktop_drop
   file_saver
   flutter_secure_storage_linux
+  system_theme
   url_launcher_linux
 )
 

@@ -13,11 +13,15 @@ import 'package:ndk/ndk.dart';
 import 'package:ndk/shared/nips/nip01/bip340.dart';
 import 'package:ndk_flutter/ndk_flutter.dart';
 import 'package:ndk_flutter/l10n/app_localizations.dart' as ndk_flutter;
+import 'package:system_theme/system_theme.dart';
 import 'package:toastification/toastification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  SystemTheme.fallbackColor = Colors.deepPurpleAccent;
+  await SystemTheme.accentColor.load();
 
   final ndk = Ndk(
     NdkConfig(
@@ -59,8 +63,19 @@ class MainApp extends StatelessWidget {
     return ToastificationWrapper(
       child: GetMaterialApp(
         title: 'File Transfer',
-        theme: ThemeData.light(),
-        darkTheme: ThemeData.dark(),
+        theme: ThemeData.from(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: SystemTheme.accentColor.accent,
+            brightness: Brightness.light,
+          ),
+        ),
+        darkTheme: ThemeData.from(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: SystemTheme.accentColor.accent,
+            brightness: Brightness.dark,
+          ),
+        ),
+        themeMode: ThemeMode.system,
         localizationsDelegates: const [ndk_flutter.AppLocalizations.delegate],
         getPages: [
           GetPage(
